@@ -86,23 +86,6 @@ public  ResponseEntity< Response> addNewRoom(
         return roomRepo.findRoomByCity(city);
     }
 
-    @GetMapping("/available-rooms-by-date-and-type")
-    public ResponseEntity<Response> getAvailableRoomsByDateAndType(
-            @RequestParam(required = false) @JsonFormat(pattern = "yyyy-MM-dd") LocalDate bookingDate,
-            @RequestParam(required = false) @JsonFormat( pattern = "HH:mm:ss") LocalDateTime startTime,
-            @RequestParam(required = false) @JsonFormat( pattern = "HH:mm:ss") LocalDateTime endTime,
-            @RequestParam(required = false) String roomType
-    ) {
-        if (bookingDate == null || roomType == null || roomType.isBlank() || startTime == null) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Please provide values for all fields(checkInDate, roomType,checkOutDate)");
-            return ResponseEntity.status(response.getStatusCode()).body(response);
-        }
-        Response response = roomService.getAvailableRoomsByDateAndType(bookingDate,startTime, endTime, roomType);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-
     @PutMapping("/update/{roomId}")
 
     public ResponseEntity<Response> updateRoom(@PathVariable Long roomId,
