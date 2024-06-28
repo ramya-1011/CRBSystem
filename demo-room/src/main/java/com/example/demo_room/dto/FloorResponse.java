@@ -1,8 +1,6 @@
 package com.example.demo_room.dto;
 
 import com.example.demo_room.Model.ConferenceRoom;
-import com.example.demo_room.Model.Floor;
-import com.example.demo_room.dto.CommonAPIResponse;
 import lombok.Data;
 
 import java.util.List;

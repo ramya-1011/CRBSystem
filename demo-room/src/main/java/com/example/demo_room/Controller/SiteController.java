@@ -1,14 +1,9 @@
 package com.example.demo_room.Controller;
 
-import com.example.demo_room.Exception.MyException;
-import com.example.demo_room.Model.City;
 import com.example.demo_room.Repository.SiteRepo;
-import com.example.demo_room.Service.SiteService;
-import com.example.demo_room.Utils.ErrorResponse;
-import com.example.demo_room.dto.Response;
+import com.example.demo_room.Service.Implementation.SiteService;
 import com.example.demo_room.dto.SiteDTO;
 import com.example.demo_room.dto.SiteResponse;
-import lombok.AllArgsConstructor;
 import com.example.demo_room.Model.Site;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,8 +39,6 @@ public class SiteController {
     }
     @GetMapping("/byName/{locationName}")
     public List<Site> getByLocation(@PathVariable String locationName){
-//        Response response =siteService.getByLocation(locationName);
-//        return ResponseEntity.status(response.getStatusCode()).body(response);
         return siteRepo.getBySiteName(locationName);
     }
     @DeleteMapping("/delete/{id}")

@@ -20,14 +20,9 @@ public interface RoomRepo extends JpaRepository<ConferenceRoom,Long> {
      List<ConferenceRoom> findBySite(@Param("site") String site);
     @Query(value = "SELECT r FROM ConferenceRoom r WHERE r.city=:city")
     List<ConferenceRoom> findRoomByCity(@Param("city") String city);
-    @Query(value ="SELECT cr from ConferenceRoom cr WHERE cr.id NOT in ( SELECT b.room.id FROM BookedRoom b)")
-    List<ConferenceRoom> findAllAvailableRooms();
-    @Query(value= "SELECT cr from ConferenceRoom cr WHERE cr.type LIKE %:type% AND " +
-            "cr.id NOT IN (SELECT b.room.id FROM BookedRoom b WHERE b.bookingDate=:bookingDate"
-            + "AND (b.startTime<:endTime) AND (b.endTime>:startTime))")
-    List<ConferenceRoom> findAvailableRoomBYDateAndType(@Param("bookingDate") LocalDate bookingDate, @Param("startTime") LocalDateTime startTime,
-                                                         @Param("endTime") LocalDateTime endTime,
-                                                         @Param("type") String type);
+    @Query(value ="SELECT cr from ConferenceRoom cr WHERE cr.id NOT in ( SELECT b.roomId FROM BookedRoom b)")
+    List<ConferenceRoom> findAllAvailableRooms(@Param("id") int id);
+
 
 
 }

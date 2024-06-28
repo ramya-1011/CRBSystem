@@ -11,9 +11,7 @@ import java.util.List;
 public class Response {
     private int status_Id;
     private String message;
-  //  private String token;
     private String confirmationCode;
-   // private String Expiration_time;
     private CityResponse cityResponse;
     private RoomResponse roomResponse;
     private BookedRoomResponse booking;

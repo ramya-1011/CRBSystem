@@ -2,6 +2,7 @@ package com.example.demo_room.Model;
 
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,10 +20,10 @@ public class Site {
     private String siteId;
     private String description;
     private String pinCode;
+    @Min(value = 1,message = "total floors cant be 0")
     private int totalFloors;
     private String locationName;
     @ManyToOne(fetch = FetchType.EAGER)
-    // @JoinColumn(name = "location_id")
     private City city;
     @OneToMany(targetEntity = Floor.class,cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_fs_id",referencedColumnName = "siteId")

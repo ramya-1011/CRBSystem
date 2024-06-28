@@ -20,16 +20,7 @@ public class RoomResponse extends CommonAPIResponse {
     private boolean isBooked=false;
     private List<BookedRoomResponse> bookings;
 
-    public RoomResponse(long id, String city, String building,
-                        int floor, int capacity, String description, String type) {
-        this.id = id;
-        this.city = city;
-        this.building = building;
-        this.floor = floor;
-        this.capacity = capacity;
-        this.description = description;
-        this.type = type;
-    }
+
 
     public RoomResponse(long id, String type, String building, String city,int floor, int capacity, String description) {
     }

@@ -1,20 +1,17 @@
 package com.example.demo_room.Controller;
 
-import com.example.demo_room.Exception.MyException;
 import com.example.demo_room.Model.City;
 import com.example.demo_room.Repository.CityRepo;
 import com.example.demo_room.Repository.RoomRepo;
-import com.example.demo_room.Service.CityService;
+import com.example.demo_room.Service.Implementation.CityService;
 import com.example.demo_room.dto.CityResponse;
 import com.example.demo_room.dto.Response;
-import com.example.demo_room.dto.SiteDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cities")
@@ -24,8 +21,7 @@ public class CityController {
     private CityRepo cityRepo;
     @Autowired
     private CityService cityService;
-    @Autowired
-    private RoomRepo roomRepo;
+
     @PostMapping("/add-city")
     public  ResponseEntity<CityResponse> addNewCity(@RequestBody City city) {
         CityResponse savedCity = cityService.addNewLocation(city);
@@ -52,7 +48,7 @@ public class CityController {
       Response response = cityService.deleteCity(id);
        cityService.deleteCity(id);
       return ResponseEntity.status(response.getStatusCode()).body(response) ;
-//      return "city is deleted from db";
+
   }
   @GetMapping("cityList")
     public List<String> getCityList(){

@@ -1,23 +1,15 @@
 package com.example.demo_room.Controller;
 
-import com.example.demo_room.Model.City;
 import com.example.demo_room.Model.ConferenceRoom;
 import com.example.demo_room.Repository.CityRepo;
 import com.example.demo_room.Repository.RoomRepo;
-import com.example.demo_room.Service.IRoomService;
+import com.example.demo_room.Service.Interface.IRoomService;
 import com.example.demo_room.dto.Response;
-import com.example.demo_room.dto.RoomResponse;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -75,11 +67,7 @@ public  ResponseEntity< Response> addNewRoom(
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/all-available-rooms")
-    public  List<ConferenceRoom> getAvailableRooms() {
 
-        return  roomRepo.findAllAvailableRooms();
-    }
     @GetMapping("/rooms-by-city/{city}")
     public List<ConferenceRoom> getRoomByCity(@PathVariable String city) {
 

@@ -1,15 +1,10 @@
 package com.example.demo_room.Controller;
 
 import com.example.demo_room.Model.Floor;
-import com.example.demo_room.Model.Site;
 import com.example.demo_room.Repository.FloorRepo;
-import com.example.demo_room.Service.FloorService;
-import com.example.demo_room.dto.CityResponse;
+import com.example.demo_room.Service.Implementation.FloorService;
 import com.example.demo_room.dto.FloorResponse;
-import com.example.demo_room.dto.SiteResponse;
-import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,18 +1,15 @@
 package com.example.demo_room.Controller;
 
 import com.example.demo_room.Model.BookedRoom;
-import com.example.demo_room.Model.ConferenceRoom;
 import com.example.demo_room.Repository.BookingRepo;
-import com.example.demo_room.Service.BookingService;
-import com.example.demo_room.Service.IBookingService;
-import com.example.demo_room.dto.BookedRoomResponse;
+import com.example.demo_room.Service.Implementation.BookingService;
 import com.example.demo_room.dto.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/booking")
@@ -23,7 +20,7 @@ public class BookingController {
     @Autowired
     private BookingRepo bookingRepo;
     @PostMapping("/book-room/{roomId}" )
-    public ResponseEntity<?> saveBookings(@PathVariable int roomId,
+    public ResponseEntity<?> saveBookings( @PathVariable int roomId,
                                                                     @RequestBody BookedRoom room) {
         try{
             BookedRoom createdBooking=bookingService.addBooking(roomId,room);
