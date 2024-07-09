@@ -1,5 +1,6 @@
 package com.example.demo_room.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Min;
@@ -11,8 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Transactional
-@Table(name = "site")
+
+@Table(name = "sites")
 public class Site {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +24,12 @@ public class Site {
     @Min(value = 1,message = "total floors cant be 0")
     private int totalFloors;
     private String locationName;
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne
+    @JoinColumn(name = "city_Id")
     private City city;
-    @OneToMany(targetEntity = Floor.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_fs_id",referencedColumnName = "siteId")
-    private List<Floor> floors;
+    @JsonIgnore
+    @OneToMany(mappedBy = "site",cascade = CascadeType.ALL,orphanRemoval = true)
+   private List<Floor> floors;
 
 }

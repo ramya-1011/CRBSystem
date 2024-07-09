@@ -17,6 +17,7 @@ import java.time.LocalTime;
 
 public class BookedRoomResponse {
     private long bookingID;
+    private long roomId;
     private String EmployeeName;
     private String EmployeeId;
     private String Employee_ph_no;

@@ -1,18 +1,15 @@
 package com.example.demo_room.Service.Interface;
 
-import com.example.demo_room.Model.City;
 import com.example.demo_room.Model.Site;
-import com.example.demo_room.dto.CityResponse;
-import com.example.demo_room.dto.Response;
-import com.example.demo_room.dto.SiteDTO;
+import com.example.demo_room.dto.SiteRequest;
 import com.example.demo_room.dto.SiteResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface ISiteService {
-    SiteResponse addNewSite(Site site);
+    SiteResponse addNewSite(SiteRequest site);
     SiteResponse deleteSite(int id);
-    Site updateSite(int id,Site site);
+    SiteResponse updateSite(int id,SiteRequest site);
 
-    SiteDTO getById(int id);
+    SiteResponse getById(int id);
+    Page<Site> searchSite(int page,int size);
 }

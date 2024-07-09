@@ -1,6 +1,7 @@
 package com.example.demo_room.Model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -17,13 +18,13 @@ import java.time.LocalTime;
 @Setter
 @Getter
 @ToString
-@Table(name="booking")
+@Table(name="bookings")
 
 public class BookedRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long bookingID;
-    private long roomId;
+private long roomId;
     @Pattern(regexp = "^[A-Za-z]*$", message = "The name must contain only letters.")
     @Size(max = 20, message = "The name must be at most 20 letters long.")
     private String EmployeeName;
@@ -38,17 +39,16 @@ public class BookedRoom {
     @JsonFormat(pattern = "yyyy-MM-dd")
    @FutureOrPresent(message = "date cant be in the past")
     private LocalDate bookingDate;
-   @JsonFormat(pattern = "HH:mm:ss")
+
     private LocalTime startTime;
-    @JsonFormat(pattern = "HH:mm:ss")
+
     private LocalTime endTime;
     private String confirmationCode;
     private String status;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="ConferenceRoom_id")
+    @JoinColumn(name="cRoom_id")
     private ConferenceRoom room;
-
-
     public BookedRoom(int roomId, BookedRoom bookingRequest) {
     }
 

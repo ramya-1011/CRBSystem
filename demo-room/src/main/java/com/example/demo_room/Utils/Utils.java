@@ -25,7 +25,7 @@ public class Utils {
         cRoomDTO.setId(Room.getId());
         cRoomDTO.setCapacity(Room.getCapacity());
         cRoomDTO.setCity(Room.getCity());
-        cRoomDTO.setBuilding(Room.getSite());
+        cRoomDTO.setSite(Room.getSite());
         cRoomDTO.setFloor(Room.getFloor());
         cRoomDTO.setType(Room.getType());
         cRoomDTO.setDescription(Room.getDescription());
@@ -38,8 +38,6 @@ public class Utils {
         response.setName(city.getName());
         response.setState(city.getState());
         response.setTotalSites(city.getTotalSites());
-        response.setSites(city.getSites());
-        response.setRooms(city.getRooms());
 
         return  response;
     }
@@ -51,7 +49,6 @@ public class Utils {
         response.setDescription(site.getDescription());
         response.setTotalFloors(site.getTotalFloors());
         response.setPinCode(site.getPinCode());
-        response.setFloors(site.getFloors());
         return  response;
     }
     public static FloorResponse mapFloorEntityToFloorResponse(Floor floor) {
@@ -59,9 +56,11 @@ public class Utils {
         response.setId(floor.getId());
         response.setFloorId(floor.getFloorId());
         response.setCity(floor.getCity());
-        response.setDescription(floor.getDescription());
+        response.setSite(floor.getSite());
         response.setTotalRooms(floor.getTotalRooms());
-        response.setRooms(floor.getRooms());
+     //   response.setDescription(floor.getDescription());
+      //  response.setTotalRooms(floor.getTotalRooms());
+      //  response.setRooms(floor.getRooms());
 
         return  response;
     }
@@ -89,7 +88,7 @@ public class Utils {
         cRoomDTO.setCity(cRoom.getCity());
         cRoomDTO.setFloor(cRoom.getFloor());
         cRoomDTO.setType(cRoom.getType());
-        cRoomDTO.setBuilding(cRoom.getSite());
+        cRoomDTO.setSite(cRoom.getSite());
         cRoomDTO.setDescription(cRoom.getDescription());
 
         if (cRoom.getBookings() != null) {
@@ -101,6 +100,7 @@ public class Utils {
     public static BookedRoomResponse mapBookingEntityToBookingDTO(BookedRoom booking) {
         BookedRoomResponse bookingDTO = new BookedRoomResponse();
         bookingDTO.setEmployeeName(booking.getEmployeeName());
+      bookingDTO.setRoomId(booking.getRoomId());
         bookingDTO.setEmployeeId(booking.getEmployeeId());
         bookingDTO.setEmployee_ph_no(booking.getEmployee_ph_no());
         bookingDTO.setBookingID(booking.getBookingID());
@@ -133,7 +133,7 @@ public class Utils {
             roomDTO.setCapacity(booking.getRoom().getCapacity());
             roomDTO.setCity(booking.getRoom().getCity());
             roomDTO.setDescription(booking.getRoom().getDescription());
-            roomDTO.setBuilding(booking.getRoom().getSite());
+            roomDTO.setSite(booking.getRoom().getSite());
             roomDTO.setFloor(booking.getRoom().getFloor());
             bookingDTO.setRoom(roomDTO);
         }

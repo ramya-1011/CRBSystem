@@ -19,11 +19,10 @@ public class BookingController {
     private BookingService bookingService;
     @Autowired
     private BookingRepo bookingRepo;
-    @PostMapping("/book-room/{roomId}" )
-    public ResponseEntity<?> saveBookings( @PathVariable int roomId,
-                                                                    @RequestBody BookedRoom room) {
+    @PostMapping("/book-room" )
+    public ResponseEntity<?> saveBookings(@RequestBody BookedRoom room) {
         try{
-            BookedRoom createdBooking=bookingService.addBooking(roomId,room);
+            BookedRoom createdBooking=bookingService.addBooking( room);
             return ResponseEntity.ok(createdBooking);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -7,44 +7,42 @@ import com.example.demo_room.Service.Interface.ICityService;
 import com.example.demo_room.Utils.Constants;
 import com.example.demo_room.Utils.Utils;
 import com.example.demo_room.dto.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@RequiredArgsConstructor
+
 @Service
 public class CityService implements ICityService {
 
     @Autowired
-    private final CityRepo cityRepo;
+    private  CityRepo cityRepo;
 
     @Override
-    public CityResponse addNewLocation(City city) {
-       CityResponse response = new CityResponse();
-        Response response1=new Response();
+    public CityResponse addNewLocation(CityRequest cityRequest) {
 
+       CityResponse response=new CityResponse();
         try {
-            City city1 = new City();
-            city1.setId(city.getId());
-            city1.setName(city.getName());
-            city1.setState(city.getState());
-            city1.setTotalSites(city.getTotalSites());
-            city1.setSites(city.getSites());
-            City savedCity = cityRepo.save(city1);
-            response = Utils.mapCityEntityToCityResponse(savedCity);
-           response1.setCityResponse(response);
-           response.setResponseCode(Constants.ResponseCode.SUCCESS.value());
+//            city.setId(city.getId());
+            City city=new City();
+            city.setName(cityRequest.getName());
+            city.setState(cityRequest.getState());
+            city.setTotalSites(cityRequest.getTotalSites());
+         // city.setSites(cityRequest.getSites());
+            City savedCity = cityRepo.save(city);
+            response=Utils.mapCityEntityToCityResponse(savedCity);
+           response.setResponseCode(200);
             response.setResponseMessage("location added Successfully");
             response.setStatusCode(200);
-            response1.setMessage("successful");
+
 
         } catch (Exception e) {
             response.setResponseCode(Constants.ResponseCode.FAILED.value());
             response.setResponseMessage("Error in adding location ");
             response.setStatusCode(500);
-            response1.setMessage("Error saving a city " + e.getMessage());
         }
 return response;
     }
@@ -68,8 +66,9 @@ return response;
     }
 
     @Override
-    public List<String> getAllCityList() {
-        return cityRepo.findAllCityList();
+    public List<CityResponse> getAllCityList() {
+         List<City> cityList=cityRepo.findAllByOrderByNameAsc();
+        return  Utils.mapCityListEntityToCityListDTO(cityList);
     }
 
     @Override
@@ -92,27 +91,27 @@ return response;
     }
 
     @Override
-    public Response updateCity(String cityName, City cityRequest) {
-        Response response = new Response();
+    public CityResponse updateCity(int id, CityRequest cityRequest) {
+
+       CityResponse response= new CityResponse();
         try{
-            City city = cityRepo .getByName(cityName).orElseThrow(() -> new MyException("City Not Found"));
-            if (cityRequest.getId() != 0) city.setId(cityRequest.getId());
+           City city= cityRepo .findById(id).orElseThrow(() -> new MyException("City Not Found"));
             if(cityRequest.getName() !=null) city.setName(cityRequest.getName());
             if(cityRequest.getState()!=null) city.setState(cityRequest.getState());
-            if(cityRequest.getTotalSites()!=null) city.setTotalSites(cityRequest.getTotalSites());
-            if(cityRequest.getSites()!=null) city.setSites(cityRequest.getSites());
-            cityRequest.setSites(cityRequest.getSites());
-            City updatedCity = cityRepo .save( city);
-            CityResponse cityDTO = Utils.mapCityEntityToCityResponse (updatedCity);
-            response.setStatusCode(200);
-            response.setMessage("successful");
-            response.setCityResponse(cityDTO);
+            if(cityRequest.getTotalSites()!=0) city.setTotalSites(cityRequest.getTotalSites());
+//          if(cityRequest.getSites()!=null) city.setSites(cityRequest.getSites());
+//            cityRequest.setSites(cityRequest.getSites());
+            cityRepo.save( city);
+//
+//            response.setStatusCode(200);
+//            response.setResponseMessage("successful");
+          return   Utils.mapCityEntityToCityResponse (city);
         }catch (MyException e){
             response.setStatusCode(404);
-            response.setMessage(e.getMessage());
+            response.setResponseMessage(e.getMessage());
         }catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Error saving a city " + e.getMessage());
+            response.setResponseMessage("Error saving a city " + e.getMessage());
         }
         return response;
 

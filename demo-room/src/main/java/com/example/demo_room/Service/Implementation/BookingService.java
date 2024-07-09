@@ -59,7 +59,7 @@ public class BookingService implements IBookingService {
         Response response = new Response();
 
         try {
-            List<BookedRoom> bookingList = bookingRepo.findAll(Sort.by(Sort.Direction.DESC, "bookingID"));
+            List<BookedRoom> bookingList = bookingRepo.findAll(Sort.by(Sort.Direction.ASC, "bookingID"));
             List<BookedRoomResponse> bookingDTOList = Utils.mapBookingListEntityToBookingListDTO(bookingList);
             response.setStatusCode(200);
             response.setMessage("successful");
@@ -101,7 +101,7 @@ public class BookingService implements IBookingService {
         return response;
 
     }
-    public BookedRoom addBooking(long roomId, BookedRoom bookedRoom)  throws Exception {
+    public BookedRoom addBooking(BookedRoom bookedRoom)  throws Exception {
         Response response = new Response();
         Optional<ConferenceRoom> room = Optional.ofNullable(roomRepo.findById(bookedRoom.getRoomId()).orElseThrow(() -> new MyException("room not found")));
         LocalDate currentDate= LocalDate.now();

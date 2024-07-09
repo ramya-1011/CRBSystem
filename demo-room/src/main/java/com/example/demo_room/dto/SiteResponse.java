@@ -1,5 +1,6 @@
 package com.example.demo_room.dto;
 
+import com.example.demo_room.Model.City;
 import com.example.demo_room.Model.Floor;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class SiteResponse extends CommonAPIResponse {
     private int totalFloors;
     private String locationName;
     private int statusCode;
+    private City city;
     private List<Floor> floors;
 }

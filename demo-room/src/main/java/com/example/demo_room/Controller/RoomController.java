@@ -5,6 +5,8 @@ import com.example.demo_room.Repository.CityRepo;
 import com.example.demo_room.Repository.RoomRepo;
 import com.example.demo_room.Service.Interface.IRoomService;
 import com.example.demo_room.dto.Response;
+import com.example.demo_room.dto.RoomRequest;
+import com.example.demo_room.dto.RoomResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +26,10 @@ public class RoomController {
     @Autowired
     private final IRoomService roomService;
     @PostMapping("/add-room")
-public  ResponseEntity< Response> addNewRoom(
-        @RequestParam("id") long id,
-        @RequestParam("type")  String type,
-        @RequestParam("city") String city,
-        @RequestParam("building") String building,
-        @RequestParam("floor") int floor,
-        @RequestParam("capacity") int capacity,
-        @RequestParam("description") String description) {
-    Response savedRoom = roomService.addNewRoom(  id,   city,floor, building, type,  capacity,  description);
-    return  ResponseEntity.status(savedRoom.getStatusCode()).body(savedRoom);
+public  ResponseEntity< RoomResponse> addNewRoom(@RequestBody RoomRequest conferenceRoom)
+       {
+    RoomResponse savedRoom = roomService.addNewRoom(  conferenceRoom);
+    return  ResponseEntity.status(savedRoom.getResponseCode()).body(savedRoom);
 
 }
     @GetMapping("/types")
@@ -46,13 +42,13 @@ public  ResponseEntity< Response> addNewRoom(
     }
 
     @GetMapping("/allRooms")
-    public ResponseEntity<Response> getAllRooms(){
-        Response response = roomService.getAllRooms();
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+    public ResponseEntity<List<RoomResponse>> getAllRooms(){
+       List<RoomResponse>  response = roomService.getAllRooms();
+        return ResponseEntity.ok(response);
     }
-    @GetMapping("/byCity/{city}")
-    public List<ConferenceRoom> getByCity(@PathVariable String city){
-        return roomRepo.findRoomByCity(city);
+    @GetMapping("/byCity/{cityId}")
+    public List<ConferenceRoom> getByCity(@PathVariable int cityId){
+        return roomRepo.findRoomByCity(cityId);
     }
     @DeleteMapping("/delete/{roomId}")
     public ResponseEntity<Response> deleteRoom(@PathVariable Long roomId) {
@@ -62,31 +58,25 @@ public  ResponseEntity< Response> addNewRoom(
     }
 
     @GetMapping("/room-by-id/{roomId}")
-    public ResponseEntity<Response> getRoomById(@PathVariable Long roomId) {
-        Response response = roomService.getRoomById(roomId);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-
-
-    @GetMapping("/rooms-by-city/{city}")
-    public List<ConferenceRoom> getRoomByCity(@PathVariable String city) {
-
-        return roomRepo.findRoomByCity(city);
+    public ResponseEntity<RoomResponse> getRoomById(@PathVariable Long roomId) {
+        RoomResponse response = roomService.getRoomById(roomId);
+        return ResponseEntity.status(response.getResponseCode()).body(response);
     }
 
     @PutMapping("/update/{roomId}")
 
-    public ResponseEntity<Response> updateRoom(@PathVariable Long roomId,
-                                               @RequestParam(value = "city", required = false) String city,
-                                               @RequestParam(value = "floor", required = false) int floor,
-                                               @RequestParam(value = "type", required = false) String type,
-                                               @RequestParam(value = "capacity", required = false) int capacity,
-                                               @RequestParam(value = "building", required = false) String building,
-                                               @RequestParam(value = "description", required = false) String description
-
-    ) {
-        Response response = roomService.updateRoom( roomId,city, floor, type, capacity,building, description);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
+    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId,@RequestBody RoomRequest room) {
+        RoomResponse response = roomService.updateRoom( roomId,room);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/filter")
+    public ResponseEntity<List<RoomResponse>> getAllRooms(
+            @RequestParam(value = "cityId", required = false) Integer cityId,
+            @RequestParam(value = "siteId", required = false) Integer siteId,
+            @RequestParam(value = "floorId", required = false) Integer floorId)
+    {
+        List< RoomResponse> rooms = roomService.getRooms(cityId,siteId,floorId);
+        return ResponseEntity.ok(rooms);
     }
 
 

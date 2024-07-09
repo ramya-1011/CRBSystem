@@ -2,10 +2,12 @@ package com.example.demo_room.Controller;
 
 import com.example.demo_room.Repository.SiteRepo;
 import com.example.demo_room.Service.Implementation.SiteService;
-import com.example.demo_room.dto.SiteDTO;
+import com.example.demo_room.dto.APIResponse;
+import com.example.demo_room.dto.SiteRequest;
 import com.example.demo_room.dto.SiteResponse;
 import com.example.demo_room.Model.Site;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +25,13 @@ public class SiteController {
 
 
     @GetMapping("/byId/{id}")
-    public ResponseEntity<?> getSiteById(@PathVariable int id) {
-        SiteDTO site = siteService.getById(id);
+    public ResponseEntity<SiteResponse> getSiteById(@PathVariable int id) {
+        SiteResponse site = siteService.getById(id);
         return new ResponseEntity<>(site, HttpStatus.OK);
     }
 
     @PostMapping("/add-site")
-    public  ResponseEntity<SiteResponse> addNewSite(@RequestBody Site site) {
+    public  ResponseEntity<SiteResponse> addNewSite(@RequestBody SiteRequest site) {
          SiteResponse savedSite = siteService.addNewSite(site);
         return ResponseEntity.status(savedSite.getStatusCode()).body(savedSite);
     }
@@ -37,9 +39,9 @@ public class SiteController {
     public List<Site> getAllSites(){
         return siteRepo.findAll();
     }
-    @GetMapping("/byName/{locationName}")
-    public List<Site> getByLocation(@PathVariable String locationName){
-        return siteRepo.getBySiteName(locationName);
+    @GetMapping("/byLocation/{id}")
+    public List<Site> getByLocation(@PathVariable int id){
+        return siteRepo.getByLocation(id);
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<SiteResponse> deleteSite(@PathVariable int id){
@@ -47,8 +49,8 @@ public class SiteController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 @PutMapping("/update/{id}")
-    public ResponseEntity<Site> updateSite(@PathVariable int id,@RequestBody Site site){
-    Site updatedSite = siteService.updateSite(id, site);
+    public ResponseEntity<SiteResponse> updateSite(@PathVariable int id,@RequestBody SiteRequest site){
+    SiteResponse updatedSite = siteService.updateSite(id, site);
     if (updatedSite == null) {
         return ResponseEntity.notFound().build();
     }
@@ -56,4 +58,11 @@ public class SiteController {
 
 
 }
+    @GetMapping("/pagination")
+    public APIResponse<Page<Site>> getByPagination(@RequestParam(defaultValue = "0") int offset,
+                                                   @RequestParam(defaultValue = "10") int pageSize){
+        Page<Site> sitesWithPagination= siteService.searchSite(offset,pageSize);
+        return new APIResponse<>(sitesWithPagination.getSize(),sitesWithPagination);
+    }
+
 }

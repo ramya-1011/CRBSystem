@@ -1,107 +1,136 @@
 package com.example.demo_room.Service.Implementation;
 
 import com.example.demo_room.Exception.MyException;
+import com.example.demo_room.Model.City;
 import com.example.demo_room.Model.Floor;
+import com.example.demo_room.Model.Site;
+import com.example.demo_room.Repository.CityRepo;
 import com.example.demo_room.Repository.FloorRepo;
+import com.example.demo_room.Repository.SiteRepo;
 import com.example.demo_room.Utils.Constants;
 import com.example.demo_room.Utils.Utils;
 import com.example.demo_room.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FloorService {
     @Autowired
     private FloorRepo floorRepo;
+    @Autowired
+    private CityRepo cityRepo;
+    @Autowired
+    private SiteRepo siteRepo;
 
-    public Floor addNewLocation( Floor floorInput) throws Exception {
-         Floor floor =new Floor();
-        Response response1=new Response( );
+    public FloorResponse addNewLocation( FloorRequest floorRequest) throws Exception {
+
+        FloorResponse response=new FloorResponse( );
 
         try {
              Floor floor1= new Floor();
-             floor1.setId(floorInput.getId());
-             floor1.setFloorId(floorInput.getFloorId());
-             floor1.setTotalRooms(floorInput.getTotalRooms());
-             floor1.setCity(floorInput.getCity());
-             floor1.setDescription(floorInput.getDescription());
-             floor1.setRooms(floorInput.getRooms());
+             floor1.setFloorId(floorRequest.getFloorId());
+             floor1.setTotalRooms(floorRequest.getTotalRooms());
+            City city = cityRepo.findById(floorRequest.getCityId()).orElseThrow(()->new MyException("City not found with id"));
+            Site site=siteRepo.findById(floorRequest.getSiteId()).orElseThrow(()-> new MyException("Site not Found"));
+              if(!site.getCity().equals(city)){
+                  throw new IllegalArgumentException("site id mentioned is not in the city selected");
+              }
+            floor1.setCity(city);
+            floor1.setSite(site);
             Floor savedFloor=floorRepo.save(floor1);
-            savedFloor.setResponseCode(Constants.ResponseCode.SUCCESS.value());
-            savedFloor.setResponseMessage("Floor added Successfully");
-            response1.setFloor(savedFloor);
+            response= Utils.mapFloorEntityToFloorResponse(savedFloor);
+            response.setResponseCode(Constants.ResponseCode.SUCCESS.value());
+            response.setResponseMessage("Floor added Successfully");
 
         } catch (Exception e) {
-            floor.setResponseCode(Constants.ResponseCode.FAILED.value());
-            floor.setResponseMessage("Error in adding floor ");
-            response1.setFloor(floor);
+            response.setResponseCode(Constants.ResponseCode.FAILED.value());
+            response.setResponseMessage("Error in adding floor "+e.getMessage());
         }
-        return response1.getFloor();
+        return response;
     }
 
-        public Floor updateFloor(int id, Floor floorRequest) {
-            Response response = new Response();
+        public FloorResponse updateFloor(int id, FloorRequest floorRequest) {
+            FloorResponse response = new FloorResponse();
 
-            Floor floor=floorRepo.findById(id).orElse( null);
-            if(floor!=null){
-                if(floorRequest.getId()!=0) floor.setId(floorRequest.getId());
+            try{
+                Floor floor=floorRepo.findById(id).orElseThrow(()->new MyException("floor not found"));
                 if(floorRequest.getFloorId()!=null) floor.setFloorId(floorRequest.getFloorId());
-                if(floorRequest.getDescription()!=null) floor.setDescription(floor.getDescription());
-                if(floorRequest.getTotalRooms()!=0) floor.setTotalRooms(floor.getTotalRooms());
-                if(floorRequest.getCity()!=null)floor.setCity(floorRequest.getCity());
-                if(floorRequest.getRooms()!=null)floor.setRooms(floorRequest.getRooms());
-                floorRequest.setRooms(floorRequest.getRooms());
+                if(floorRequest.getTotalRooms()!=0) floor.setTotalRooms(floorRequest.getTotalRooms());
+                City city =cityRepo.findById(floorRequest.getCityId()).orElseThrow(()->new MyException("city not found"));
+                Site site=siteRepo.findById(floorRequest.getSiteId()).orElseThrow(()-> new MyException("Site not Found"));
+                if(!site.getCity().equals(city)){
+                    throw new IllegalArgumentException("site id mentioned is not in the city selected");
+                }
+                 floorRepo.save(floor);
                 floor.setResponseCode(Constants.ResponseCode.SUCCESS.value());
                 floor.setResponseMessage("updated");
-                response.setMessage("successful");
-                response.setFloor(floor);
-                return floorRepo.save(floor);
+                return Utils.mapFloorEntityToFloorResponse(floor);
+            }catch (MyException e){
+                response.setResponseCode(404);
+                response.setResponseMessage(e.getMessage());
+            }catch (Exception e) {
+                response.setResponseCode(500);
+                response.setResponseMessage("Error saving a floor " + e.getMessage());
             }
-            return null;
+            return response;
 
 
     }
-    public Floor getById(int id) {
-        Floor floorResponse=new Floor();
-        Response response=new Response();
+    public FloorResponse getById(int id) {
+        FloorResponse floorResponse=new FloorResponse();
 
         try {
-             Floor floor =  floorRepo.findById(id).orElseThrow(() -> new MyException("Site Not Found"));
-            FloorResponse  floorDTO = Utils.mapFloorEntityToFloorResponse(floor);
+             Floor floor =  floorRepo.findById(id).orElseThrow(() -> new MyException("floor Not Found"));
+            floorResponse= Utils.mapFloorEntityToFloorResponse(floor);
             floor.setResponseMessage("fetched successfully");
-            floor.setResponseCode(Constants.ResponseCode.SUCCESS.value());
-            response.setFloorResponse(floorDTO);
-            response.setFloor(floor);
+            floor.setResponseCode( 200);
         }catch (MyException e) {
             floorResponse.setResponseMessage("error ");
             floorResponse.setResponseCode(404);
         } catch (Exception e) {
-            response.setStatusCode(500);
+            floorResponse.setResponseCode(500);
             floorResponse.setResponseMessage("error"+ e.getMessage());
         }
-        return  response.getFloor();
+        return  floorResponse;
 
     }
     public FloorResponse deleteFloor(int id) {
         FloorResponse response=new FloorResponse();
         try {
-            floorRepo.findById(id).orElseThrow(() -> new MyException("site not found"));
+            floorRepo.findById(id).orElseThrow(() -> new MyException("floor not found"));
             floorRepo.deleteById(id);
             response.setResponseCode(200);
             response.setResponseMessage("successful");
         }catch (MyException e) {
             response.setResponseCode(404);
-            response.setResponseMessage("error site not found");
+            response.setResponseMessage("error floor not found");
         }
         catch (Exception e) {
 
             response.setResponseCode(500);
-            response.setResponseMessage("error site not found" + e.getMessage());
+            response.setResponseMessage("error floor not found" + e.getMessage());
 
         }
         return response;
     }
 
-
+public List<FloorResponse> getFloors(Integer cityId,Integer siteId){
+        List<Floor> floors;
+if(cityId!=null && siteId!=null){
+    floors=floorRepo.getByCityIdAndSiteId(cityId,siteId);
+}
+else if (cityId!=null){
+    floors=floorRepo.getByCityId(cityId);
+}
+else if(siteId!=null){
+    floors=floorRepo.getBySiteId(siteId);
+}
+else {
+  floors  =floorRepo.findAll();
+}
+return Utils.mapFloorListEntityToFloorListDTO(floors);
+}
 
 }
